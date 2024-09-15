@@ -30,9 +30,7 @@ class NoteForm extends HTMLElement {
             margin: 20px auto;
           }
         }
-        input[type="text"],
-         input[type="number"],
-         textarea {
+        input[type="text"], textarea {
           padding: 10px;
           font-size: 16px;
           border: 1px solid #ccc;
@@ -54,7 +52,6 @@ class NoteForm extends HTMLElement {
         }
       </style>
       <form>
-        <input type="number" id="id" placeholder="id">
         <input type="text" id="title" placeholder="Title">
         <textarea id="body" name="body" placeholder="Isi"></textarea>
         <button id="submit">Add Note</button>

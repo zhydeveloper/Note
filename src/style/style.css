@@ -1,0 +1,27 @@
+/* Container for the notes */
+.note-container {
+    border-radius: 10px;
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 20px;
+    overflow: hidden;
+
+@media (max-width: 767px) {
+   
+    .note-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .note-item {
+        padding: 10px;
+    }
+
+    .note-item button {
+        width: 100%;
+        font-size: 13px;
+        padding: 8px;
+        margin-top: 8px;
+    }
+}
+}

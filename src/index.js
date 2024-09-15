@@ -3,6 +3,9 @@ import "./components/note-form.js";
 import "./components/note-item.js";
 import "./components/app-bar.js";
 import "./components/loading-indicator.js";
+import "./components/succes-note.js";
+import "./components/delete-alert.js";  
+import "./components/archive-alert.js"; // Import the new archive alert component
 
 const API_URL = "https://notes-api.dicoding.dev/v2";
 
@@ -16,7 +19,7 @@ function showLoading() {
 function hideLoading() {
   const loading = document.querySelector("loading-indicator");
   if (loading) {
-    loading.remove();
+    loading.hideLoading();
   }
 }
 
@@ -65,18 +68,66 @@ async function addNote(title, body) {
       body: noteItem.getAttribute("body"),
     }));
     renderNotes([newNote, ...notes]);
+
+    // Show success alert
+    const successAlert = document.createElement("success-alert");
+    successAlert.setAttribute("message", "Note added successfully!");
+    document.body.appendChild(successAlert);
+
+    // Remove success alert after 1.8 seconds
+    setTimeout(() => successAlert.remove(), 1800);
   } catch (error) {
     console.error(error);
   }
 }
 
-// Delete a note
+// Archive a note
+async function archiveNoteElement(id, element) {
+  try {
+    const response = await fetch(`${API_URL}/notes/${id}/archive`, {
+      method: "POST",  // Changed from PUT to POST
+    });
+
+    if (response.ok) {
+      element.remove();
+
+      // Show archive alert
+      const archiveAlert = document.createElement("archive-alert");
+      archiveAlert.setAttribute("message", "Note archived successfully!");
+      document.body.appendChild(archiveAlert);
+
+      // Remove archive alert after 1.8 seconds
+      setTimeout(() => archiveAlert.remove(), 1800);
+    } else {
+      alert("Failed to archive note. Please try again.");
+    }
+  } catch (error) {
+    console.error("Failed to archive note:", error);
+    alert("An error occurred while archiving the note. Please try again later.");
+  }
+}
+
+// Delete a note and show red alert
 async function deleteNoteElement(id, element) {
   try {
-    await fetch(`${API_URL}/notes/${id}`, { method: "DELETE" });
-    element.remove();
+    const response = await fetch(`${API_URL}/notes/${id}`, { method: "DELETE" });
+
+    if (response.ok) {
+      element.remove();
+
+      // Show delete alert
+      const deleteAlert = document.createElement("delete-alert");
+      deleteAlert.setAttribute("message", "Note deleted successfully!");
+      document.body.appendChild(deleteAlert);
+
+      // Remove delete alert after 1.8 seconds
+      setTimeout(() => deleteAlert.remove(), 1800);
+    } else {
+      alert("Failed to delete note. Please try again.");
+    }
   } catch (error) {
     console.error("Failed to delete note:", error);
+    alert("An error occurred while deleting the note. Please try again later.");
   }
 }
 
@@ -89,11 +140,15 @@ document.addEventListener("DOMContentLoaded", () => {
     addNote(title, body);
   });
 
-  document
-    .querySelector(".note-container")
-    .addEventListener("deleteNote", (event) => {
-      const { id } = event.detail;
-      const noteElement = event.target.closest("note-item");
-      delete NoteElement(id, noteElement);
-    });
+  document.querySelector(".note-container").addEventListener("deleteNote", (event) => {
+    const { id } = event.detail;
+    const noteElement = event.target.closest("note-item");
+    deleteNoteElement(id, noteElement);
+  });
+
+  document.querySelector(".note-container").addEventListener("archiveNote", (event) => {
+    const { id } = event.detail;
+    const noteElement = event.target.closest("note-item");
+    archiveNoteElement(id, noteElement);
+  });
 });

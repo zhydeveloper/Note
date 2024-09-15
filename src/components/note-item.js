@@ -53,28 +53,41 @@ class NoteItem extends HTMLElement {
           justify-content: flex-end; 
         }
 
-        .note-item {
-         width: 300px;
-        }
-        
-        .container {
-          width: 300px;     
-          border-radius: 10px;
-          padding: 20px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-          display: grid;
-          grid-template-columns: repeat(3, 1fr); 
-          gap: 20px; 
-        }
-
-        @media (max-width: 767px) {
-          .container {
-            grid-template-columns: repeat(2, 1fr); /* 2 kolom untuk mobile */
-          }
-        }
+    .note-item {
+    width: 100%; 
+    background-color: #fff; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    overflow: hidden; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  }
+  
+  .note-item:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+  }
+  
+  .note-item h2 {
+    margin: 0;
+    padding: 15px;
+    font-size: 1.5rem;
+    color: #333; 
+  }
+  
+  .note-item p {
+    padding: 0 15px 15px;
+    color: #666;
+  }
+  
+  .note-item .button {
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+   
       </style>
-
-      <div class="container">
+   
         <div class="note-item">
           <h2>${title}</h2>
           <p>${body}</p>
@@ -83,7 +96,6 @@ class NoteItem extends HTMLElement {
             <button id="archive-button">Archive</button>
           </div>
         </div>
-      </div>
     `;
 
     const deleteButton = this.shadowRoot.querySelector('#delete-button');
@@ -92,6 +104,14 @@ class NoteItem extends HTMLElement {
         detail: { id }, 
         bubbles: true, // Penting: agar event bisa ditangkap di luar shadow DOM
         composed: true  // Penting: agar event bisa menembus shadow boundary
+      }));
+    });
+    
+    this.shadowRoot.querySelector("#archive-button").addEventListener("click", () => {
+      this.dispatchEvent(new CustomEvent("archiveNote", {
+        detail: { id: this.getAttribute("id") },
+        bubbles: true,
+        composed: true
       }));
     });
   }
